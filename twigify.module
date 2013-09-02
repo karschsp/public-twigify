@@ -342,7 +342,7 @@ function twigify_process_theme_functions(&$twig, &$fh) {
     $newThemeName = $twig->getNewThemeName();
     $output       = "<?php \n";
     // get a desegregated list of theme functions
-    $segregated_functions = twigify_return_segregated_theme_functions_list()[$oldThemeName];
+    $segregated_functions = twigify_return_segregated_theme_functions_list($oldThemeName);
     drush_print('Twigify found these theme functions:');
     drush_print('Template.php theme functions / preprocessors:');
     foreach ($segregated_functions['not_theme_hooks'] as $nth) {
@@ -497,7 +497,7 @@ function twigify_return_segregated_theme_functions_list() {
 
     // get a list of all PHP functions that match this theme's namespace (NB: we'll miss non-conventionally named helper functions)
     // note: this *must* come after bootstrapping in the theme; otherwise the theme's functions won't be defined in PHP
-    $themeFunctions = array_filter(get_defined_functions()['user'], function ($item) use ($themeName) {
+    $themeFunctions = array_filter(get_defined_functions('user'), function ($item) use ($themeName) {
       return preg_match("/^_?{$themeName}_/", $item);
     });
     // filter out the theme hooks we've already found
